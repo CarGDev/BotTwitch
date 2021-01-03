@@ -1,5 +1,6 @@
 const tmi = require('tmi.js')
 const config = require('./config/config')()
+const socialMediaCheck = require('./src/socialMedia')
 
 const client = new tmi.Client({
   options: { debug: true, messagesLogLevel: "info"  },
@@ -22,11 +23,6 @@ const rollDice = () => {
 }
 
 const streamTwitch = 'haciendo un bot para twitch'
-const twitterSide = `twitter ${config.TWITTER}`
-const igSide = `IG ${config.IG}`
-const fbSide = `FB ${config.FB}`
-const platziSide = `Si quieren un mes gratis en Platzi vayan a esta pagina ${config.PLATZI}`
-const youtubeSide = `Siganme en Youtube para crear contenido en esa plataforma y seguir creciendo esta bonita comunidad ${config.YOUTUBE}`
 
 client.on('connected', () => {
   const nameChannel = config.USERNAME
@@ -34,35 +30,32 @@ client.on('connected', () => {
     nameChannel,
     `Hola a todos hoy estamos ${streamTwitch}`
   )
-  client.action(
-    nameChannel,
-    `Siganme en ${twitterSide}`
-  )
-  client.action(
-    nameChannel,
-    `Siganme en ${igSide}`
-  ) 
-  client.action(
-    nameChannel,
-    `Siganme en ${fbSide}`
-  ) 
-  client.action(
-    nameChannel,
-    `${platziSide}`
-  ) 
-  client.action(
-    nameChannel,
-    `${youtubeSide}`
-  )
+  socialMediaCheck(client).socialMediaFn(nameChannel)
 })
+
+const entries = {}
+const newChannel = {}
 
 client.on('message', (channel, tags, message, self) => {
   if(self) return
-  
+  const isAdminMessage = tags.username === config.USERNAME.toLowerCase()
   const commandName = message.trim()
+  
+  if(message.toLowerCase() === '!enter') {
+    entries[tags.username] = tags.username
+    client.say(channel, `You have been entered @${tags.username}`)
+  } else if (message.toLowerCase() === '!pickwinner' && isAdminMessage) {
+    const entriesArr = Object.values(entries)
+    const randomNumber = Math.floor(Math.random() * entriesArr.length)
+    const winner = entriesArr[randomNumber]
+    client.say(channel, `The winner is @${winner}`)
+  }
 
+  if(commandName.toLowerCase() === '!redessociales') {
+    socialMediaCheck(client).socialMediaFn(channel)
+  }
   if(commandName.toLowerCase() === '!hello') {
-    client.say(channel, `@${tags.username}, heya!`)
+    client.say(channel, `@${tags.username}, Bienvenidos!`)
   }
 
   if(commandName.toLowerCase() === '!random') {
@@ -72,6 +65,18 @@ client.on('message', (channel, tags, message, self) => {
 
   if(commandName.toLowerCase() === '!stream') {
     client.say(channel, `Hoy estamos ${streamTwitch}`)
+  }
+})
+
+client.on('chat', (channel, tags, message, self) => {
+  const newChannelArr = Object.values(newChannel)
+  if(newChannelArr.includes(tags.username)) {
+    console.log(newChannelArr)
+    return
+  } else {
+    console.log(newChannelArr)
+    newChannel[tags.username] = tags.username
+    client.action(channel, `Hola como estas @${tags.username} es un gusto tenerte en el live`)
   }
 })
 
