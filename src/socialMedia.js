@@ -26,7 +26,6 @@ module.exports = function socialMedia (client) {
   }
 
   return {
-    socialMedia,
     socialMediaFn
   }
 }
