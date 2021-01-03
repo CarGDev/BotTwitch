@@ -1,0 +1,33 @@
+{
+  "name": "bottwitch",
+  "version": "1.0.0",
+  "description": "Bot para el canal de CarGDev",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CarGDev/BotTwitch.git"
+  },
+  "keywords": [
+    "bot",
+    "twitch",
+    "node.js"
+  ],
+  "author": "Carlos Gutierrez",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/CarGDev/BotTwitch/issues"
+  },
+  "homepage": "https://github.com/CarGDev/BotTwitch#readme",
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "tmi.js": "^1.7.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.6"
+  }
+}
